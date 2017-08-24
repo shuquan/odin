@@ -20,6 +20,6 @@ COPY . /opt/odin
 
 EXPOSE 8888
 
-WORKDIR /opt
+WORKDIR /opt/
 
-CMD /usr/local/bin/jupyter notebook --ip=0.0.0.0 --allow-root --no-browser
+CMD /usr/local/bin/jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --notebook-dir=odin

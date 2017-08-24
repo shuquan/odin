@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 environ_value = dict(os.environ)
 
+# Validate the REDMINE_* before
 redmine_url = environ_value['REDMINE_URL']
 redmine_username = environ_value['REDMINE_USERNAME']
 redmine_password = environ_value['REDMINE_PASSWORD']
