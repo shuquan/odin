@@ -20,6 +20,9 @@ COPY . /opt/odin
 
 EXPOSE 8888
 
-WORKDIR /opt/
+WORKDIR /opt/odin
 
-CMD /usr/local/bin/jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --notebook-dir=odin
+RUN cp etc/msyh.ttf /usr/local/lib/python2.7/dist-packages/matplotlib/mpl-data/fonts/ttf/ && \
+    cp etc/matplotlibrc /usr/local/lib/python2.7/dist-packages/matplotlib/mpl-data/matplotlibrc
+
+CMD /usr/local/bin/jupyter notebook --ip=0.0.0.0 --allow-root --no-browser
