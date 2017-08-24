@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --upgrade pip && \
     pip install setuptools && \
-    pip install python-redmine pandas jupyter
+    pip install python-redmine jupyter && \
+    pip install pandas matplotlib && \
+    pip install jieba pyLDAvis sklearn
 
 RUN mkdir -p /opt/odin
 
