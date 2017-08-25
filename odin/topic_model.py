@@ -17,26 +17,16 @@ redmine_password = environ_value['REDMINE_PASSWORD']
 project_name = 'biz_req'
 redmine = Redmine(redmine_url, username=redmine_username,
                   password=redmine_password)
-project = redmine.project.get(project_name)
+issues = redmine.issue.filter(status_id='*', project_id=project_name)
 data = []
 
-def chinese_word_cut(mytext):
-    return " ".join(jieba.cut(mytext))
-
-def print_top_words(model, feature_names, n_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print("Topic #%d:" % topic_idx)
-        print(" ".join([feature_names[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-    print()
-
-for i in project.issues:
+for i in issues:
     data.append([
 #         i.attachments,
          i.author.name,
 #         i.changesets,
 #         i.children,
-         i.created_on.isoformat(),
+         i.created_on,
 #         i.custom_fields,
          i.description,
 #         i.done_ratio,
@@ -50,14 +40,15 @@ for i in project.issues:
          i.subject,
 #         i.time_entries,
          i.tracker.name,
-         i.updated_on.isoformat(),
+         i.updated_on,
 #         i.watchers
      ])
 
 dp = pd.DataFrame(data,
-                  columns=['author', 'created time', 'description', 'id',
+                  columns=['author', 'created_on', 'description', 'id',
                            'priority', 'project', 'status', 'subject',
-                           'tracker', 'updated time'])
+                           'tracker', 'updated_on'])
+
 dp["content_cutted"] = dp.description.apply(chinese_word_cut)
 
 tf_vectorizer = CountVectorizer(strip_accents = 'unicode',
