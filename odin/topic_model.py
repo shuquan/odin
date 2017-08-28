@@ -1,53 +1,27 @@
 # -*- coding: utf-8 -*-
 import jieba
-import os
 import pandas as pd
 import pyLDAvis
 import pyLDAvis.sklearn
-from redminelib import Redmine
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-environ_value = dict(os.environ)
+from odin.common import utils
 
-# Validate the REDMINE_* before
-redmine_url = environ_value['REDMINE_URL']
-redmine_username = environ_value['REDMINE_USERNAME']
-redmine_password = environ_value['REDMINE_PASSWORD']
 project_name = 'biz_req'
-redmine = Redmine(redmine_url, username=redmine_username,
-                  password=redmine_password)
-issues = redmine.issue.filter(status_id='*', project_id=project_name)
-data = []
 
-for i in issues:
-    data.append([
-#         i.attachments,
-         i.author.name,
-#         i.changesets,
-#         i.children,
-         i.created_on,
-#         i.custom_fields,
-         i.description,
-#         i.done_ratio,
-         i.id,
-#         i.journals,
-         i.priority.name,
-         i.project.name,
-#         i.relations,
-#         i.start_date,
-         i.status.name,
-         i.subject,
-#         i.time_entries,
-         i.tracker.name,
-         i.updated_on,
-#         i.watchers
-     ])
+dp = utils.get_dataframe_by_project_name(project_name)
+redmine = utils.redmine_connect()
 
-dp = pd.DataFrame(data,
-                  columns=['author', 'created_on', 'description', 'id',
-                           'priority', 'project', 'status', 'subject',
-                           'tracker', 'updated_on'])
+def chinese_word_cut(mytext):
+    return " ".join(jieba.cut(mytext))
+
+def print_top_words(model, feature_names, n_top_words):
+    for topic_idx, topic in enumerate(model.components_):
+        print("Topic #%d:" % topic_idx)
+        print(" ".join([feature_names[i]
+                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+    print()
 
 dp["content_cutted"] = dp.description.apply(chinese_word_cut)
 
