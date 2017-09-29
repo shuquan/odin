@@ -65,10 +65,11 @@ Y: # of issue and show the status composition
 
 d = {}
 for i in redmine.custom_field.all().get(custom_field_feature_id)['possible_values']:
+    i['value'] = i['value'].strip('-')
     dp_tmp = dp_bug[dp_bug.module == i['value']].groupby('status').size()
     d[i['value']] = dp_tmp
 total = pd.DataFrame(d)
-total.T.plot.bar(stacked=True)
+total.T.plot.bar(stacked=True, figsize=(20, 6))
 
 """
 X: version
@@ -95,6 +96,7 @@ Y: # of issue and show the feature composition
 
 d = {}
 for i in redmine.custom_field.all().get(custom_field_feature_id)['possible_values']:
+    i['value'] = i['value'].strip('-')
     dp_tmp = dp_bug_resovled[dp_bug_resovled.module == i['value']].groupby('interval').size()
     d[i['value']] = dp_tmp
 total = pd.DataFrame(d)
