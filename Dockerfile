@@ -12,7 +12,8 @@ RUN pip install --upgrade pip && \
     pip install setuptools && \
     pip install python-redmine jupyter && \
     pip install pandas matplotlib && \
-    pip install jieba pyLDAvis sklearn
+    pip install jieba pyLDAvis sklearn && \
+    pip install elasticsearch elasticsearch-dsl
 
 RUN mkdir -p /opt/odin
 

@@ -123,3 +123,24 @@ total.plot.bar(stacked=True)
 体系，如功能点，UCP等等。如果有，就可以延续现有的需求规模估算方式。如果没有，那么我强烈建议，
 在需求上游对需求进行适当拆分，保证需求规模相对均匀，然后使用需求个数来反映需求规模。
 """
+
+
+from datetime import datetime
+from elasticsearch import Elasticsearch
+import os
+
+environ_value = dict(os.environ)
+es_host_url = environ_value['ES_HOST_URL']
+es_host_port = environ_value['ES_HOST_PORT']
+es = Elasticsearch([{'host': es_host_url,'port': es_host_port}])
+query = {"query": {"match_all": {}}}
+
+scanResp = es.search(index="flog-*", body=query ,size=200, search_type="scan", scroll="1m")
+scrollId= scanResp['_scroll_id']
+response_tmp = es.scroll(scroll_id=scrollId, scroll= "5m")
+total=0
+while len(response_tmp['hits']['hits']) != 0:
+    total = total + len(response_tmp['hits']['hits'])
+    scrollId = response_tmp['_scroll_id']
+    response_tmp = es.scroll(scroll_id=scrollId, scroll= "5m")
+    print total
